@@ -264,6 +264,34 @@ document.addEventListener('DOMContentLoaded', async () => {
       selectionCount.textContent = `${count} selected`;
       selectAllCheckbox.checked = count === tabs.length;
       selectAllCheckbox.indeterminate = count > 0 && count < tabs.length;
+
+      // Show Restore/Suspend buttons based on what's selected
+      const hasSuspended = [...selectedTabs].some(id => {
+        const tab = tabs.find(t => t.id === id);
+        return tab && isSuspendedUrl(tab.url);
+      });
+      const hasNonSuspended = [...selectedTabs].some(id => {
+        const tab = tabs.find(t => t.id === id);
+        return tab && !isSuspendedUrl(tab.url);
+      });
+
+      const restoreBtn = document.getElementById('restore-selected');
+      const suspendBtn = document.getElementById('suspend-selected');
+
+      if (hasSuspended && hasNonSuspended) {
+        restoreBtn.style.display = '';
+        restoreBtn.textContent = 'Restore';
+        suspendBtn.style.display = '';
+        suspendBtn.textContent = 'Suspend';
+      } else if (hasSuspended) {
+        restoreBtn.style.display = '';
+        restoreBtn.textContent = 'Restore Selected';
+        suspendBtn.style.display = 'none';
+      } else {
+        restoreBtn.style.display = 'none';
+        suspendBtn.style.display = '';
+        suspendBtn.textContent = 'Suspend Selected';
+      }
     } else {
       actionsNormal.style.display = '';
       actionsSelection.style.display = 'none';
@@ -298,11 +326,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateSelectionUI();
   });
 
-  // ─── Suspend Selected ─────────────────────────────────────────────
+  // ─── Suspend / Restore Selected ───────────────────────────────────
 
   document.getElementById('suspend-selected').addEventListener('click', async () => {
     const tabIds = [...selectedTabs];
     await chrome.runtime.sendMessage({ action: 'suspend-selected', tabIds });
+    window.close();
+  });
+
+  document.getElementById('restore-selected').addEventListener('click', async () => {
+    const tabIds = [...selectedTabs];
+    await chrome.runtime.sendMessage({ action: 'restore-selected', tabIds });
     window.close();
   });
 

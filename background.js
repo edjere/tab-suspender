@@ -349,6 +349,31 @@ async function suspendSelectedTabs(tabIds) {
   return { suspended, skipped };
 }
 
+async function restoreSelectedTabs(tabIds) {
+  const restoredIds = [];
+  for (const tabId of tabIds) {
+    try {
+      const tab = await chrome.tabs.get(tabId);
+      if (isSuspendedUrl(tab.url)) {
+        const params = new URL(tab.url).searchParams;
+        const originalUrl = params.get('url');
+        if (originalUrl) {
+          await removeFromSuspendedGroup(tabId);
+          await chrome.tabs.update(tabId, { url: originalUrl });
+          restoredIds.push(tabId);
+        }
+      }
+    } catch { /* tab may have closed */ }
+  }
+  if (restoredIds.length > 0) {
+    const { suspendedTabs = {} } = await chrome.storage.local.get('suspendedTabs');
+    restoredIds.forEach(id => delete suspendedTabs[id]);
+    await chrome.storage.local.set({ suspendedTabs });
+  }
+  await updateBadge();
+  return { restored: restoredIds.length };
+}
+
 async function restoreAllTabs(windowId) {
   const tabs = await chrome.tabs.query({ windowId });
   const restoredTabIds = [];
@@ -576,6 +601,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         break;
       case 'suspend-selected': {
         const result = await suspendSelectedTabs(message.tabIds || []);
+        sendResponse({ ok: true, ...result });
+        return;
+      }
+      case 'restore-selected': {
+        const result = await restoreSelectedTabs(message.tabIds || []);
         sendResponse({ ok: true, ...result });
         return;
       }

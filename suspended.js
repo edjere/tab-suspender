@@ -12,13 +12,12 @@ const faviconUrl = params.get('favicon') || '';
   document.title = usePrefix ? '\uD83D\uDCA4 ' + originalTitle : originalTitle;
 })();
 
-// Set favicon
-if (faviconUrl) {
-  const link = document.createElement('link');
-  link.rel = 'icon';
-  link.href = faviconUrl;
-  document.head.appendChild(link);
-}
+// Set tab-strip favicon to the extension's own icon — bundled, same-origin,
+// works 100% of the time and gives an instant visual "suspended" indicator.
+const favLink = document.createElement('link');
+favLink.rel = 'icon';
+favLink.href = chrome.runtime.getURL('icons/icon32.png');
+document.head.appendChild(favLink);
 
 // Populate UI
 document.getElementById('tab-title').textContent = originalTitle;
@@ -26,6 +25,7 @@ document.getElementById('tab-url').textContent = originalUrl || '';
 const faviconImg = document.getElementById('favicon');
 if (faviconUrl) {
   faviconImg.src = faviconUrl;
+  faviconImg.style.filter = 'grayscale(0.85) opacity(0.55)';
   faviconImg.onerror = () => { faviconImg.style.display = 'none'; };
 } else {
   faviconImg.style.display = 'none';
