@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tab Suspender Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <h1>Tab Suspender Settings</h1>
+
+  <section>
+    <h2>General</h2>
+    <label>
+      Suspend tabs after
+      <select id="timeout">
+        <option value="1">1 minute</option>
+        <option value="5">5 minutes</option>
+        <option value="10">10 minutes</option>
+        <option value="15" selected>15 minutes</option>
+        <option value="30">30 minutes</option>
+        <option value="60">1 hour</option>
+        <option value="120">2 hours</option>
+        <option value="240">4 hours</option>
+        <option value="480">8 hours</option>
+        <option value="1440">24 hours</option>
+      </select>
+      of inactivity
+    </label>
+
+    <label class="checkbox-label">
+      <input type="checkbox" id="suspend-pinned">
+      Allow suspending pinned tabs
+    </label>
+  </section>
+
+  <section id="suspend-behavior-section">
+    <h2>Suspend Behavior</h2>
+
+    <label class="checkbox-label">
+      <input type="checkbox" id="use-title-prefix" checked>
+      Show \uD83D\uDCA4 prefix in suspended tab titles
+    </label>
+
+    <label class="checkbox-label" id="tab-groups-label">
+      <input type="checkbox" id="use-tab-groups">
+      Group suspended tabs together
+    </label>
+
+    <div id="group-name-row" class="sub-setting" style="display: none;">
+      <label>
+        Group name
+        <input type="text" id="tab-group-name" value="Suspended" placeholder="Suspended">
+      </label>
+    </div>
+  </section>
+
+  <section>
+    <h2>Whitelist</h2>
+    <p class="help-text">Tabs on these domains will never be suspended. Use *.example.com for wildcards.</p>
+    <div class="whitelist-input">
+      <input type="text" id="whitelist-add" placeholder="e.g. mail.google.com or *.github.com">
+      <button id="whitelist-add-btn">Add</button>
+    </div>
+    <ul id="whitelist"></ul>
+  </section>
+
+  <section>
+    <h2>Keyboard Shortcuts</h2>
+    <p class="help-text">
+      Customize shortcuts on your browser's extensions page:
+      <a href="#" id="shortcuts-link">Open shortcuts settings</a>
+    </p>
+    <dl class="shortcuts">
+      <dt>Suspend current tab</dt>
+      <dd>Ctrl+Shift+S (&#8984;&#8679;S on Mac)</dd>
+      <dt>Suspend other tabs</dt>
+      <dd>Ctrl+Shift+O (&#8984;&#8679;O on Mac)</dd>
+      <dt>Toggle whitelist</dt>
+      <dd>Ctrl+Shift+W (&#8984;&#8679;W on Mac)</dd>
+    </dl>
+  </section>
+
+  <section class="about">
+    <h2>About</h2>
+    <p>Tab Suspender v1.1.0</p>
+    <p class="help-text warning">Note: If this extension is removed while tabs are suspended, those tabs will show a dead page. The original URL is always visible in the page and URL bar for recovery.</p>
+    <p class="help-text">Local build &mdash; no tracking, no network access, fully auditable.</p>
+  </section>
+
+  <script src="options.js"></script>
+</body>
+</html>

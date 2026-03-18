@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suspended Tab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="suspended.css">
+</head>
+<body>
+  <div class="container" id="restore-trigger" tabindex="0" role="button" aria-label="Click to restore tab">
+    <div class="card">
+      <img id="favicon" class="favicon" alt="" width="48" height="48">
+      <h1 id="tab-title" class="title">Suspended Tab</h1>
+      <p id="tab-url" class="url"></p>
+      <button id="restore-btn" class="restore-btn">Click to restore</button>
+      <p class="hint">Click anywhere or press Enter to restore this tab</p>
+    </div>
+  </div>
+  <script src="suspended.js"></script>
+</body>
+</html>

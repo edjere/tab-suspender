@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <h1>Tab Suspender</h1>
+      <span id="stats" class="stats"></span>
+    </div>
+    <button id="settings-btn" title="Settings" class="icon-btn">&#9881;</button>
+  </header>
+
+  <div id="search-bar" class="search-bar" style="display: none;">
+    <input type="text" id="search-input" placeholder="Filter tabs..." autocomplete="off">
+  </div>
+
+  <div class="filter-bar">
+    <button class="chip active" data-filter="all">All</button>
+    <button class="chip" data-filter="active">Active</button>
+    <button class="chip" data-filter="suspended">Suspended</button>
+    <button class="chip" data-filter="protected">Protected</button>
+  </div>
+
+  <div id="actions-normal" class="actions-card">
+    <button id="suspend-current" class="primary-btn" title="Suspend the active tab">Suspend This Tab</button>
+    <div class="actions-row">
+      <button id="suspend-others" title="Suspend all other tabs">Suspend Others</button>
+      <button id="suspend-all" title="Suspend all tabs">Suspend All</button>
+      <button id="restore-all" title="Restore all suspended tabs">Restore All</button>
+    </div>
+  </div>
+
+  <div id="actions-selection" class="selection-bar" style="display: none;">
+    <label class="select-all-label">
+      <input type="checkbox" id="select-all">
+      <span id="selection-count">0 selected</span>
+    </label>
+    <div class="selection-actions">
+      <button id="suspend-selected" class="sel-action-btn">Suspend Selected</button>
+      <button id="clear-selection" class="sel-clear-btn" title="Clear selection">&times;</button>
+    </div>
+  </div>
+
+  <div id="tab-list" class="tab-list"></div>
+
+  <footer>
+    <button id="whitelist-btn" class="whitelist-btn"></button>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
