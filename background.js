@@ -116,6 +116,10 @@ async function restoreTimestamps() {
 }
 
 async function persistTimestamps() {
+  // Merge with stored data so a service-worker restart (which resets
+  // the in-memory object to {}) never wipes previously-saved timestamps.
+  const stored = (await chrome.storage.local.get('lastActiveTimestamps')).lastActiveTimestamps || {};
+  lastActiveTimestamps = { ...stored, ...lastActiveTimestamps };
   await chrome.storage.local.set({ lastActiveTimestamps });
 }
 
@@ -223,6 +227,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === CHECK_ALARM) {
     await restoreTimestamps();
     await checkAndDiscardInactiveTabs();
+    await persistTimestamps(); // save timestamps assigned to newly-seen tabs
     await cleanupYouTubeTimestamps();
   } else if (alarm.name === PERSIST_ALARM) {
     await persistTimestamps();
@@ -234,6 +239,13 @@ async function checkAndDiscardInactiveTabs() {
   const timeoutMs = settings.timeoutMinutes * 60 * 1000;
   const now = Date.now();
   const tabs = await chrome.tabs.query({});
+
+  // Prune entries for tabs that no longer exist (prevents storage bloat
+  // after the merge-persist strategy keeps old entries alive).
+  const currentTabIds = new Set(tabs.map(t => t.id));
+  for (const id of Object.keys(lastActiveTimestamps)) {
+    if (!currentTabIds.has(Number(id))) delete lastActiveTimestamps[id];
+  }
 
   for (const tab of tabs) {
     if (isTabProtected(tab, settings)) continue;
